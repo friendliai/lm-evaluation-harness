@@ -1,7 +1,7 @@
-# ORCA evaluation harness
+# Periflow evaluation harness
 
 ## Supported Task
-We only support subset of lm-evaluation-harness. Please check [orca-supported-task-table](orca_supported_task_table.md).
+We only support subset of lm-evaluation-harness. Please check [periflow-supported-task-table](periflow_supported_task_table.md).
 
 ## Evaluation Command
 
