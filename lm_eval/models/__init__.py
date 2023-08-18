@@ -17,7 +17,7 @@ MODEL_REGISTRY = {
     "textsynth": textsynth.TextSynthLM,
     "dummy": dummy.DummyLM,
     "periflow": periflow.ORCALM,
-    "periflow_sync": periflow.ORCAASYNCLM
+    "periflow_async": periflow.ORCAASYNCLM
 }
 
 
