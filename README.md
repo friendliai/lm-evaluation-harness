@@ -12,7 +12,7 @@ python main.py \
 --model_args model_name_or_path {model_name_of_path from huggingface hub},req_url={engine request url} \
 --tasks {evaluation tas} \
 --num_fewshot {number of fewshot samples} # optional. without this option, num_fewshot=0
---no-cache # optional. without this option, if evaluation result is existing, then skip the evaluation process, return cached results.
+--no_cache # optional. without this option, if evaluation result is existing, then skip the evaluation process, return cached results.
 --average_acc_tasks # only for mmlu tasks. In lm-evaluation-harness, mmlu dataset contains a lots of seperated datasets. Using this option, the average acc of all seperated datsets is added in result table.
 ```
 
@@ -24,7 +24,7 @@ python main.py \
 --model_args model_name_or_path {model_name_of_path from huggingface hub},req_url={engine request url} \
 --tasks {evaluation tas} \
 --num_fewshot {number of fewshot samples} # optional. without this option, num_fewshot=0
---no-cache # optional. without this option, if evaluation result is existing, then skip the evaluation process, return cached results.
+--no_cache # optional. without this option, if evaluation result is existing, then skip the evaluation process, return cached results.
 --average_acc_tasks # only for mmlu tasks. In lm-evaluation-harness, mmlu dataset contains a lots of seperated datasets. Using this option, the average acc of all seperated datsets is added in result table.
 ```
 
