@@ -2,6 +2,8 @@ import argparse
 import json
 import logging
 import os
+import numpy as np
+from typing import Dict, cast
 
 from lm_eval import tasks, evaluator, utils
 
@@ -30,6 +32,7 @@ def parse_args():
     parser.add_argument("--check_integrity", action="store_true")
     parser.add_argument("--write_out", action="store_true", default=False)
     parser.add_argument("--output_base_path", type=str, default=None)
+    parser.add_argument("--average_acc_tasks", action="store_true") 
 
     return parser.parse_args()
 
@@ -75,6 +78,22 @@ def main():
 
     dumped = json.dumps(results, indent=2)
     print(dumped)
+
+    if args.average_acc_tasks:
+         accs = np.array([v["acc"] for _, v in results["results"].items()])
+         avg_acc = np.mean(accs)
+         cast(Dict,results["results"]).update(
+             {
+                 "avg_all_task" : {
+                     "acc" : avg_acc
+                 }
+             }
+         )
+         cast(Dict,results["versions"]).update(
+             {
+                 "avg_all_task" : 0
+             }
+         )
 
     if args.output_path:
         os.makedirs(os.path.dirname(args.output_path), exist_ok=True)

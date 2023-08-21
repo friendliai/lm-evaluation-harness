@@ -16,8 +16,8 @@ MODEL_REGISTRY = {
     "anthropic": anthropic_llms.AnthropicLM,
     "textsynth": textsynth.TextSynthLM,
     "dummy": dummy.DummyLM,
-    "periflow": periflow.ORCALM,
-    "periflow_async": periflow.ORCAASYNCLM
+    "periflow": periflow.PeriflowLM,
+    "periflow_async": periflow.PeriflowASYNCLM
 }
 
 

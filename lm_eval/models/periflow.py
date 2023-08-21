@@ -45,7 +45,7 @@ def orca_completion(inps, req_url, forced_output_tokens=None,):
     return pred["choices"][0]["logprobs"]
 
 
-class ORCALM(BaseLM):
+class PeriflowLM(BaseLM):
 
     def __init__(self, model_name_or_path:str, req_url):
         super().__init__()
@@ -122,7 +122,7 @@ class ORCALM(BaseLM):
         raise NotImplementedError()
 
 
-class ORCAASYNCLM(BaseLM):
+class PeriflowASYNCLM(BaseLM):
 
     def __init__(self, model_name_or_path:str, req_url):
         super().__init__()
@@ -161,9 +161,9 @@ class ORCAASYNCLM(BaseLM):
     
     async def _loglikelihood_tokens_async(self, re_ord, disable_tqdm=False):
         res = []
-
+        forced_logprobs = []
         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=7200)) as session:
-            forced_logprobs = []
+            tasks = []
             for _, context_enc, continuation_enc in re_ord.get_reordered():
                 total_len = len(context_enc)+len(continuation_enc)
                 over_len = total_len-self.max_length
@@ -177,10 +177,11 @@ class ORCAASYNCLM(BaseLM):
                         req_url=self.req_url
                     )
                 ))
-            forced_logprobs = await tqdm_asyncio.gather(*forced_logprobs)
-            for forced_logprob in forced_logprobs:
-                answer = (sum(forced_logprob), False) # Only Support metric calculating from logprobs ex) MultiChoiceTask
-                res.append(answer)
+            forced_logprobs.append(await tqdm_asyncio.gather(*tasks))
+            
+        for forced_logprob in forced_logprobs:
+            answer = (sum(forced_logprob), False) # Only Support metric calculating from logprobs ex) MultiChoiceTask
+            res.append(answer)
 
             return res
 
