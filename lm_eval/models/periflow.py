@@ -10,15 +10,8 @@ from lm_eval.base import BaseLM
 from lm_eval import utils
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-async def check_health(session, master_uri):
-    try:
-        async with session.get(f"{master_uri}/health") as response:
-            return response.status == 200
-    except:
-        return False
     
-async def orca_async_completion(session, inps, req_url, forced_output_tokens=None,):
+async def periflow_async_completion(session, inps, req_url, forced_output_tokens=None,):
     data={}
     headers={}
     data["tokens"] = inps
@@ -32,7 +25,7 @@ async def orca_async_completion(session, inps, req_url, forced_output_tokens=Non
 
     return pred["choices"][0]["logprobs"]
 
-def orca_completion(inps, req_url, forced_output_tokens=None,):
+def periflow_completion(inps, req_url, forced_output_tokens=None,):
     data={}
     headers={}
     data["tokens"] = inps
@@ -98,7 +91,7 @@ class PeriflowLM(BaseLM):
             over_len = total_len-self.max_length
             inp = context_enc[over_len:] if over_len > 0 else context_enc
             
-            forced_logprob = orca_completion(
+            forced_logprob = periflow_completion(
                 inps=inp,
                 forced_output_tokens=continuation_enc,
                 req_url=self.req_url
@@ -161,29 +154,27 @@ class PeriflowASYNCLM(BaseLM):
     
     async def _loglikelihood_tokens_async(self, re_ord, disable_tqdm=False):
         res = []
-        forced_logprobs = []
+        tasks = []
         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=7200)) as session:
-            tasks = []
             for _, context_enc, continuation_enc in re_ord.get_reordered():
                 total_len = len(context_enc)+len(continuation_enc)
                 over_len = total_len-self.max_length
                 inp = context_enc[over_len:] if over_len > 0 else context_enc
                 
-                forced_logprobs.append(asyncio.create_task(
-                    orca_async_completion(
+                tasks.append(asyncio.create_task(
+                    periflow_async_completion(
                         session=session,
                         inps=inp,
                         forced_output_tokens=continuation_enc,
                         req_url=self.req_url
                     )
                 ))
-            forced_logprobs.append(await tqdm_asyncio.gather(*tasks))
-            
-        for forced_logprob in forced_logprobs:
-            answer = (sum(forced_logprob), False) # Only Support metric calculating from logprobs ex) MultiChoiceTask
-            res.append(answer)
+            forced_logprobs = await tqdm_asyncio.gather(*tasks)
+            for forced_logprob in forced_logprobs:
+                answer = (sum(forced_logprob), False) # Only Support metric calculating from logprobs ex) MultiChoiceTask
+                res.append(answer)
 
-            return res
+        return res
 
     def _loglikelihood_tokens(self, requests, disable_tqdm=False):
         def _collate(x):
