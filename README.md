@@ -3,6 +3,28 @@
 ## Overview
 - We only support subset of lm-evaluation-harness. Please check [periflow-supported-task-table](periflow_supported_task_table.md).
 
+## Install
+
+To install the `lm-eval` refactor branch from the github repository, run:
+
+```bash
+git clone https://github.com/friendliai/lm-evaluation-harness.git
+cd lm-evaluation-harness
+pip install -e .
+```
+
+To install additional multilingual tokenization and text segmentation packages, you must install the package with the `multilingual` extra:
+
+```bash
+pip install -e ".[multilingual]"
+```
+
+To install the package with all extras, run
+```bash
+pip install -e ".[all]"
+```
+
+
 ## Evaluation Command
 ### 1. Sequential Request Evaluation
 ```bash
