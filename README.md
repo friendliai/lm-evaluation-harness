@@ -60,3 +60,4 @@ python main.py \
 |Model|ARC `acc_norm`|Hellaswag `acc_norm`|MMLU `average acc of all`|TruthfulQA `mc2`|
 |---|---|---|---|---|
 |Llama-2-7b-chat-hf|52.82|78.51|48.20|45.32|
+
