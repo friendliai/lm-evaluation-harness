@@ -1,4 +1,4 @@
-# Periflow evaluation harness
+# PeriFlow evaluation harness
 
 ## Overview
 - We only support subset of lm-evaluation-harness. Please check [periflow-supported-task-table](periflow_supported_task_table.md).
