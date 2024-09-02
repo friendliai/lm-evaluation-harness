@@ -21,7 +21,7 @@ from typing import (
 
 try:
     import requests
-    from aiohttp import ClientSession, TCPConnector
+    from aiohttp import ClientSession, TCPConnector, ClientTimeout
     from tenacity import RetryError, retry, stop_after_attempt, wait_exponential
     from tqdm import tqdm
     from tqdm.asyncio import tqdm_asyncio
@@ -437,8 +437,10 @@ class TemplateAPI(TemplateLM):
         **kwargs,
     ) -> Union[List[List[str]], List[List[Tuple[float, bool]]]]:
         ctxlens = ctxlens if ctxlens else [None] * len(requests)
+
         conn = TCPConnector(limit=self._concurrent)
-        async with ClientSession(connector=conn) as session:
+        timeout = ClientTimeout(total=None)
+        async with ClientSession(connector=conn, timeout=timeout) as session:
             retry_: Callable[..., Awaitable[Any]] = retry(
                 stop=stop_after_attempt(self.max_retries),
                 wait=wait_exponential(multiplier=0.5, min=1, max=10),

@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 # Language Model Evaluation Harness
+=======
+# Friendli LM-Evaluation-Harness
+>>>>>>> Stashed changes
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10256836.svg)](https://doi.org/10.5281/zenodo.10256836)
 
