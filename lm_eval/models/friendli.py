@@ -237,7 +237,7 @@ class FriendliCompletionsAPI(LocalCompletionsAPI):
                 "model": self.model,
                 "tokens": input_list,
                 "temperature": 0,
-                "include_output_logprobs": True,
+                "logprobs": 1,
                 "forced_output_tokens": forced_output_tokens_list,
                 "seed": seed,
             }
@@ -255,6 +255,6 @@ class FriendliCompletionsAPI(LocalCompletionsAPI):
         for out in outputs:
             for choice, ctxlen in zip(out["choices"], ctxlens):
                 assert ctxlen > 0, "Context length must be greater than 0"
-                forced_logprobs = sum(choice["logprobs"])
+                forced_logprobs = sum(choice["logprobs"]["token_logprobs"])
                 res.append((forced_logprobs, False)) #NOTE: Can't use exact_match metrics when running non-generation task.
         return res
